@@ -6,7 +6,7 @@
    In Sakila, all tables already use atomic columns, so 1NF is satisfied.
    If a table had a column with multiple values (e.g., a CSV list), it would violate 1NF.
    To normalize, split those multi-valued attributes into a separate table.
-   (Example: if film had a column 'actors' listing many actors, we'd create a film_actor table.)
+   (Example: if a film had a column 'actors' listing many actors, we'd create a film_actor table.)
 
 2. Second Normal Form (2NF):
    A table is in 2NF if it is in 1NF and no non-key attribute depends on part of a composite key:contentReference[oaicite:6]{index=6}.
@@ -28,7 +28,7 @@
 
 -- CTE Queries:
 
--- CTE Basics: distinct list of actor names and film count
+-- 5. CTE Basics: a distinct list of actor names and film count
 WITH actor_films AS (
     SELECT a.actor_id, a.first_name, a.last_name, COUNT(fa.film_id) AS film_count
     FROM actor AS a
@@ -38,7 +38,7 @@ WITH actor_films AS (
 SELECT first_name, last_name, film_count
 FROM actor_films;
 
--- CTE with Joins: film title, language name, and rental rate
+-- 6. CTE with Joins: film title, language name, and rental rate
 WITH film_lang AS (
     SELECT f.title, l.name AS language_name, f.rental_rate
     FROM film AS f
@@ -46,7 +46,7 @@ WITH film_lang AS (
 )
 SELECT * FROM film_lang;
 
--- CTE for Aggregation: total revenue per customer
+-- 7. CTE for Aggregation: total revenue per customer
 WITH customer_revenue AS (
     SELECT customer_id, SUM(amount) AS total_revenue
     FROM payment
@@ -56,7 +56,7 @@ SELECT c.customer_id, c.first_name, c.last_name, cr.total_revenue
 FROM customer AS c
 JOIN customer_revenue AS cr ON c.customer_id = cr.customer_id;
 
--- CTE with Window Function: rank films by rental_duration
+-- 8. CTE with Window Function: rank films by rental_duration
 WITH film_durations AS (
     SELECT film_id, title, rental_duration
     FROM film
@@ -65,7 +65,7 @@ SELECT film_id, title, rental_duration,
        RANK() OVER (ORDER BY rental_duration DESC) AS duration_rank
 FROM film_durations;
 
--- CTE and Filtering: customers with more than two rentals
+-- 9. CTE and Filtering: customers with more than two rentals
 WITH frequent_customers AS (
     SELECT customer_id, COUNT(*) AS rentals_count
     FROM rental
@@ -76,7 +76,7 @@ SELECT c.customer_id, c.first_name, c.last_name, fc.rentals_count
 FROM customer AS c
 JOIN frequent_customers AS fc ON c.customer_id = fc.customer_id;
 
--- CTE for Date Calculations: total rentals per month
+-- 10. CTE for Date Calculations: total rentals per month
 WITH monthly_rentals AS (
     SELECT YEAR(rental_date) AS yr, MONTH(rental_date) AS mon, COUNT(*) AS rentals_count
     FROM rental
@@ -85,7 +85,7 @@ WITH monthly_rentals AS (
 SELECT yr, mon, rentals_count
 FROM monthly_rentals;
 
--- CTE and Self-Join: pairs of actors in the same film
+-- 11. CTE and Self-Join: pairs of actors in the same film
 WITH actor_pairs AS (
     SELECT fa1.film_id, fa1.actor_id AS actor1_id, fa2.actor_id AS actor2_id
     FROM film_actor AS fa1
@@ -100,7 +100,7 @@ JOIN film AS f ON ap.film_id = f.film_id
 JOIN actor AS a1 ON ap.actor1_id = a1.actor_id
 JOIN actor AS a2 ON ap.actor2_id = a2.actor_id;
 
--- Recursive CTE: find all staff reporting to a manager (using reports_to)
+-- 12. Recursive CTE: find all staff reporting to a manager (using reports_to)
 WITH RECURSIVE subordinates AS (
     SELECT staff_id, first_name, last_name, reports_to
     FROM staff
