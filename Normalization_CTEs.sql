@@ -25,6 +25,7 @@
    - To achieve 1NF: split the items list into separate rows in an order_items table.
    - To achieve 2NF: if Order had a composite key (OrderID, ItemID) and OrderDate depended only on OrderID, move OrderDate to Orders table.
    - (Sakila's design is already normalized up to 3NF in practice.)
+*/
 
 -- CTE Queries:
 
