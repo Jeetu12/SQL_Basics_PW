@@ -28,7 +28,7 @@ ALTER TABLE employees
 -- 5. Consequences of constraint violations
 -- (Explained in written document – not applicable to .sql script)
 
--- 6. Modify products table: add primary key and default price
+-- 6. Modify the products table: add a primary key and a default price
 
 DROP TABLE IF EXISTS products;
 
@@ -225,8 +225,9 @@ SELECT * FROM customer WHERE active = 1;
 SELECT rental_id FROM rental WHERE customer_id = 1;
 
 -- 7. Films with rental_duration > 5
--- SELECT * FROM film WHERE rental_duration > 5;
+SELECT * FROM film WHERE rental_duration > 5;
 -- note: There is no column with rental_duration in the table rental.
+
 -- 8. Count of films with replacement cost between 15 and 20
 SELECT COUNT(*) FROM film
 WHERE replacement_cost > 15 AND replacement_cost < 20;
