@@ -73,29 +73,29 @@ ALTER TABLE products
 
 -- 7. INNER JOIN: student_name and class_name
 
-DROP TABLE IF EXISTS students;
-CREATE TABLE students (
+DROP TABLE IF EXISTS Students;
+CREATE TABLE Students (
     student_id INT PRIMARY KEY,
     student_name VARCHAR(50) NOT NULL,
     class_id INT
 );
-INSERT INTO students (student_id, student_name, class_id) VALUES
+INSERT INTO Students (student_id, student_name, class_id) VALUES
 (1, 'Alice', 101),
 (2, 'Bob', 102),
 (3, 'Charlie', 101);
 
-DROP TABLE IF EXISTS classes;
-CREATE TABLE classes (
+DROP TABLE IF EXISTS Classes;
+CREATE TABLE Classes (
     class_id INT PRIMARY KEY,
     class_name VARCHAR(50) NOT NULL
 );
-INSERT INTO classes (class_id, class_name) VALUES
+INSERT INTO Classes (class_id, class_name) VALUES
 (101, 'Math'),
 (102, 'Science'),
 (103, 'History');
 
 SELECT s.student_name, c.class_name
-FROM students s
+FROM Students s
 INNER JOIN classes c ON s.class_id = c.class_id;
 
 -- 8. LEFT JOIN: products with customer and order info
@@ -138,81 +138,80 @@ INSERT INTO Products (product_id, product_name, order_id) VALUES
 (2, 'Phone', NULL);
 
 SELECT p.product_id, p.product_name, o.order_id, c.customer_name
-FROM products p
+FROM Products p
 LEFT JOIN order_items oi ON p.product_id = oi.product_id
 LEFT JOIN orders o ON oi.order_id = o.order_id
 LEFT JOIN customers c ON o.customer_id = c.customer_id;
 
--- 9. Total sales per product
+-- 9. Total sales per Products
 
-DROP TABLE IF EXISTS products1;
-CREATE TABLE products1 (
+DROP TABLE IF EXISTS Products;
+CREATE TABLE Products (
     product_id INT PRIMARY KEY,
     product_name VARCHAR(100) NOT NULL
 );
 
-DROP TABLE IF EXISTS sales;
-CREATE TABLE sales (
+DROP TABLE IF EXISTS Sales;
+CREATE TABLE Sales (
     sale_id INT PRIMARY KEY,
     product_id INT,
     amount DECIMAL(10,2),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
--- Insert into products
-INSERT INTO products1 (product_id, product_name) VALUES
+-- Insert into Products
+INSERT INTO Products (product_id, product_name) VALUES
 (101, 'Laptop'),
 (102, 'Phone');
 
--- Insert into sales
-INSERT INTO sales (sale_id, product_id, amount) VALUES
+-- Insert into Sales
+INSERT INTO Sales (sale_id, product_id, amount) VALUES
 (1, 101, 500),
 (2, 102, 300),
 (3, 101, 700);
 
 
 SELECT p.product_id, p.product_name, SUM(oi.quantity * oi.unit_price) AS total_sales
-FROM products1 p
+FROM Products p
 INNER JOIN order_items oi ON p.product_id = oi.product_id
 GROUP BY p.product_id, p.product_name;
 
--- 10. Order quantities per customer
-
-DROP TABLE IF EXISTS customers1;
-CREATE TABLE customers1 (
+-- 10. Order quantities per Customers
+DROP TABLE IF EXISTS Customers;
+CREATE TABLE Customers (
     customer_id INT PRIMARY KEY,
     customer_name VARCHAR(100) NOT NULL
 );
 
-DROP TABLE IF EXISTS orders1;
-CREATE TABLE orders1 (
+DROP TABLE IF EXISTS Orders;
+CREATE TABLE Orders (
     order_id INT PRIMARY KEY,
     order_date DATE NOT NULL,
     customer_id INT,
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
 );
 
-DROP TABLE IF EXISTS orders_details;
-CREATE TABLE order_details (
+DROP TABLE IF EXISTS Orders_Details;
+CREATE TABLE Order_Details (
     order_id INT,
     product_id INT,
     quantity INT,
     PRIMARY KEY (order_id, product_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
 );
 
--- Insert into customers1
-INSERT INTO customers1 (customer_id, customer_name) VALUES
+-- Insert into Customers
+INSERT INTO Customers (customer_id, customer_name) VALUES
 (1, 'Alice'),
 (2, 'Bob');
 
 -- Insert into orders1
-INSERT INTO orders1 (order_id, order_date, customer_id) VALUES
+INSERT INTO Orders (order_id, order_date, customer_id) VALUES
 (1, '2024-01-02', 1),
 (2, '2024-01-05', 2);
 
 -- Insert into order_details
-INSERT INTO order_details (order_id, product_id, quantity) VALUES
+INSERT INTO Order_Details (order_id, product_id, quantity) VALUES
 (1, 101, 2),
 (1, 102, 1),
 (2, 101, 3);
@@ -306,20 +305,40 @@ SELECT * FROM actor LIMIT 50;
 -- 23. Distinct film_ids from inventory
 SELECT DISTINCT film_id FROM inventory;
 
--- Aggregations
-SELECT COUNT(*) FROM rental;
-SELECT AVG(rental_duration) FROM rental;
-SELECT UPPER(first_name), UPPER(last_name) FROM customer;
-SELECT rental_id, MONTH(rental_date) FROM rental;
-SELECT customer_id, COUNT(*) FROM rental GROUP BY customer_id;
-SELECT store_id, SUM(amount) FROM payment GROUP BY store_id;
-SELECT fc.category_id, COUNT(*) FROM film_category fc
+-- Functions: Basic Aggregate Functions:-
+
+SELECT COUNT(*) 
+FROM rental;
+
+SELECT AVG(rental_duration) 
+FROM rental;
+
+SELECT UPPER(first_name), UPPER(last_name) 
+FROM customer;
+
+SELECT rental_id, MONTH(rental_date) 
+FROM rental;
+
+SELECT customer_id, COUNT(*) 
+FROM rental 
+GROUP BY customer_id;
+
+SELECT store_id, SUM(amount) 
+FROM payment 
+GROUP BY store_id;
+
+SELECT fc.category_id, COUNT(*) 
+FROM film_category fc
 JOIN inventory i ON fc.film_id = i.film_id
 JOIN rental r ON i.inventory_id = r.inventory_id
 GROUP BY fc.category_id;
-SELECT language_id, AVG(rental_rate) FROM film GROUP BY language_id;
+
+SELECT language_id, AVG(rental_rate) 
+FROM film 
+GROUP BY language_id;
 
 -- Joins
+
 SELECT f.title, c.first_name, c.last_name
 FROM film f
 JOIN inventory i ON f.film_id = i.film_id
@@ -347,6 +366,7 @@ JOIN film f ON i.film_id = f.film_id
 WHERE ci.city = 'London';
 
 -- Advanced
+
 SELECT f.title, COUNT(*) AS times_rented
 FROM film f
 JOIN inventory i ON f.film_id = i.film_id
@@ -398,7 +418,7 @@ FROM (
 ) ranked
 WHERE rank_in_category <= 3;
 
--- 5. Difference in rental count from average per customer
+-- 5. Difference in rental count from the average per customer
 WITH rental_stats AS (
   SELECT customer_id, COUNT(*) AS rental_count
   FROM rental
