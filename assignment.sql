@@ -137,11 +137,15 @@ INSERT INTO Products (product_id, product_name, order_id) VALUES
 (1, 'Laptop', 1),
 (2, 'Phone', NULL);
 
-SELECT p.product_id, p.product_name, o.order_id, c.customer_name
-FROM Products p
-LEFT JOIN order_items oi ON p.product_id = oi.product_id
-LEFT JOIN orders o ON oi.order_id = o.order_id
-LEFT JOIN customers c ON o.customer_id = c.customer_id;
+SELECT 
+    p.order_id,
+    c.customer_name,
+    p.product_name
+FROM 
+    Products p
+LEFT JOIN Orders o ON p.order_id = o.order_id
+LEFT JOIN Customers c ON o.customer_id = c.customer_id;
+
 
 -- 9. Total sales per Products
 
@@ -170,11 +174,15 @@ INSERT INTO Sales (sale_id, product_id, amount) VALUES
 (2, 102, 300),
 (3, 101, 700);
 
+SELECT 
+    p.product_name,
+    SUM(s.amount) AS total_sales
+FROM 
+    Sales s
+INNER JOIN Products p ON s.product_id = p.product_id
+GROUP BY 
+    p.product_name;
 
-SELECT p.product_id, p.product_name, SUM(oi.quantity * oi.unit_price) AS total_sales
-FROM Products p
-INNER JOIN order_items oi ON p.product_id = oi.product_id
-GROUP BY p.product_id, p.product_name;
 
 -- 10. Order quantities per Customers
 DROP TABLE IF EXISTS Customers;
@@ -216,11 +224,15 @@ INSERT INTO Order_Details (order_id, product_id, quantity) VALUES
 (1, 102, 1),
 (2, 101, 3);
 
-SELECT o.order_id, c.customer_name, SUM(oi.quantity) AS total_quantity
-FROM Orders o
-INNER JOIN Customers c ON o.customer_id = c.customer_id
-INNER JOIN order_items oi ON o.order_id = oi.order_id
-GROUP BY o.order_id, c.customer_name;
+SELECT 
+    o.order_id,
+    c.customer_name,
+    od.quantity
+FROM 
+    Order_Details od
+INNER JOIN Orders o ON od.order_id = o.order_id
+INNER JOIN Customers c ON o.customer_id = c.customer_id;
+
 
 --
 
