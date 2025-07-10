@@ -17,7 +17,7 @@ Common constraints include:
     - UNIQUE: no duplicate values in a column.
     - NOT NULL: disallows NULL entries in a column.
     - CHECK: enforces a boolean condition (e.g., age >= 18).
-These rules ensure data accuracy and follow business rules:contentReference[oaicite:2]{index=2}.
+These rules ensure data accuracy and follow the business rules:contentReference[oaicite:2]{index=2}.
 */
 
 -- Q3: NOT NULL constraint, and NULLs in primary key
@@ -66,26 +66,20 @@ JOIN Classes AS c
     ON s.class_id = c.class_id;
 
 -- Q8: Left join example – list all products with orders
-SELECT o.order_id, c.customer_name, p.product_name
-FROM Products AS p
-LEFT JOIN order_items AS oi
-    ON p.product_id = oi.product_id
-LEFT JOIN Orders AS o
-    ON oi.order_id = o.order_id
-LEFT JOIN Customers AS c
-    ON o.customer_id = c.customer_id;
+SELECT p.order_id, c.customer_name, p.product_name
+FROM Products p
+LEFT JOIN Orders o ON p.order_id = o.order_id
+LEFT JOIN Customers c ON o.customer_id = c.customer_id;
 
 -- Q9: Total sales amount per product using INNER JOIN and SUM()
-SELECT p.product_name, SUM(oi.quantity * oi.unit_price) AS total_sales
-FROM order_items AS oi
-JOIN Products AS p
-    ON oi.product_id = p.product_id
+SELECT p.product_name, SUM(s.amount) AS total_sales
+FROM Sales s
+INNER JOIN Products p ON s.product_id = p.product_id
 GROUP BY p.product_name;
 
 -- Q10: Orders and quantity by customer using INNER JOIN
 SELECT o.order_id, c.customer_name, od.quantity
-FROM Orders AS o
-JOIN Customers AS c
-    ON o.customer_id = c.customer_id
-JOIN order_items AS od
-    ON o.order_id = od.order_id;
+FROM Order_Details od
+INNER JOIN Orders o ON od.order_id = o.order_id
+INNER JOIN Customers c ON o.customer_id = c.customer_id;
+
