@@ -205,12 +205,12 @@ INSERT INTO Customers (customer_id, customer_name) VALUES
 (1, 'Alice'),
 (2, 'Bob');
 
--- Insert into orders1
+-- Insert into Orders
 INSERT INTO Orders (order_id, order_date, customer_id) VALUES
 (1, '2024-01-02', 1),
 (2, '2024-01-05', 2);
 
--- Insert into order_details
+-- Insert into Order_Details
 INSERT INTO Order_Details (order_id, product_id, quantity) VALUES
 (1, 101, 2),
 (1, 102, 1),
