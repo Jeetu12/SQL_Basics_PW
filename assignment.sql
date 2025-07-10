@@ -12,21 +12,50 @@ CREATE TABLE employees (
   PRIMARY KEY (emp_id)
  ) ENGINE=InnoDB;
 
--- 2. Purpose of constraints & examples
--- (Explained in written document – not applicable to .sql script)
+-- Q2: Explain the purpose of constraints and examples
+/* 
+Constraints enforce rules on data to maintain integrity.
+They prevent invalid or inconsistent data entries:contentReference[oaicite:0]{index=0}. 
+Common constraints include:
+    - PRIMARY KEY: uniquely identifies each row (no NULLs, unique):contentReference[oaicite:1]{index=1}.
+    - FOREIGN KEY: ensures referential integrity between tables.
+    - UNIQUE: no duplicate values in a column.
+    - NOT NULL: disallows NULL entries in a column.
+    - CHECK: enforces a boolean condition (e.g., age >= 18).
+These rules ensure data accuracy and follow business rules:contentReference[oaicite:2]{index=2}.
+*/
 
--- 3. NOT NULL usage & primary key nullability
--- (Explained in written document – not applicable to .sql script)
+-- Q3: NOT NULL constraint, and NULLs in primary key
+/* 
+Applying NOT NULL ensures that a column always has a value (i.e., no missing data). 
+A primary key implicitly has NOT NULL; it cannot contain NULL values. 
+Primary keys uniquely identify rows, so allowing NULL (no identity) would break uniqueness:contentReference[oaicite:3]{index=3}.
+Thus, by definition, a primary key cannot be NULL:contentReference[oaicite:4]{index=4}.
+*/
 
--- 4. Add and remove a CHECK constraint on employees.age
-ALTER TABLE employees
-  ADD CONSTRAINT chk_age_min CHECK (age >= 18);
+-- Q4: Add or remove constraints on the existing table
+/*
+To add a constraint: use ALTER TABLE ... ADD CONSTRAINT. 
+Example: Make product_id a primary key:
+    ALTER TABLE products ADD PRIMARY KEY (product_id);
+To set a default on price:
+    ALTER TABLE products ALTER COLUMN price SET DEFAULT 50.00;
+To remove a constraint: use ALTER TABLE ... DROP CONSTRAINT (name).
+Example: DROP CONSTRAINT products_price_default (if named).
+These commands modify table definitions without dropping the table.
+*/
 
-ALTER TABLE employees
-  DROP CHECK chk_age_min;
-
--- 5. Consequences of constraint violations
--- (Explained in written document – not applicable to .sql script)
+-- Q5: Violating constraints consequences
+/*
+If you violate a constraint (e.g., insert a duplicate primary key or NULL into NOT NULL), 
+the database throws an error and rejects the change. For example:
+    INSERT INTO employees(emp_id, emp_name) VALUES (1, 'Alice'); 
+    INSERT INTO employees(emp_id, emp_name) VALUES (1, 'Bob');
+The second insert fails with the error: 
+    "ERROR: duplicate key value violates unique constraint" 
+(or "NULL value in column 'emp_name' violates NOT NULL constraint" if NULL).
+This prevents invalid data from being stored.
+*/
 
 -- 6. Modify the products table: add a primary key and a default price
 
