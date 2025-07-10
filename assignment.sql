@@ -1,4 +1,4 @@
--- SQL Basics Assignment Answers
+-- SQL Basics Assignment Answers (all in one)
 
 -- 1. Create the employees table
 
